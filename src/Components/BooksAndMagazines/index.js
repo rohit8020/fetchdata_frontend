@@ -25,24 +25,6 @@ useEffect(()=>{
         fetchMagzines();
     }
 },[booksAdded])
-console.log(BooksAndMagazines)
-    function func(file){
-    fetch(`${window.location.origin}/download/${file}`,{
-    method : 'POST'})
-    .then((res)=>res.blob().then((blob)=>{
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'filename.zip'); 
-        document.body.appendChild(link);
-        link.click();
-    }).catch(()=>{
-        console.log("error")
-    })).catch(()=>{
-        console.log("error")
-    })
-}
-
 
   return (<>
     <h1 style={{textAlign: "center"}}>You can Add Magazine in csv file and download it</h1>
@@ -73,8 +55,8 @@ console.log(BooksAndMagazines)
         </thead>
 <tbody>
 
-        {BooksAndMagazines.sort(function (a,b) { return a.title.toLocaleLowerCase() > b.title.toLocaleLowerCase()?1:-1})?.length>0 && BooksAndMagazines?.map(magazine=><>
-        <tr>
+        {BooksAndMagazines.sort(function (a,b) { return a.title.toLocaleLowerCase() > b.title.toLocaleLowerCase()?1:-1})?.length>0 && BooksAndMagazines?.map(magazine=>
+        <tr key={Math.floor(Math.random()*1000000)}>
                 <td
                 style={{fontSize: "0.9rem",textAlign : 'left'}}
 >{magazine.title} </td>
@@ -88,13 +70,9 @@ console.log(BooksAndMagazines)
                 style={{fontSize: "0.9rem",textAlign : magazine.publishedAt?'left':`center`}}
                 >{magazine.publishedAt || '-'} </td>
               </tr>
-        </>
-              
               )}
               </tbody>
     </table>
-    <button className="btn" onClick={() => func('magazines')}  >Download {0} </button>
-  
   </>
   
   

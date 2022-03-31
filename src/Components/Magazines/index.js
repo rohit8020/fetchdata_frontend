@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import './index.css'
-
+import axios from 'axios'
 function Magazines() {
     const [magazines, setMagazines] = useState([])
     const [isbnSearch,setIsbnSearch] = useState('')
+    const [added,setAdded]=useState(null)
     const fetchMagzines = async () => {
         const response = await fetch(`${window.location.origin}/magazines`)
         const data = await response.json()
@@ -30,28 +31,49 @@ function Magazines() {
     })
 }
 
+const handleSubmit=(e)=>{
+    e.preventDefault()
+    const form=new FormData(e.target)
+    let formData={
+      title:form.get('title'),
+      authors:form.get('authors'),
+      isbn:form.get('isbn'),
+      publishedAt:form.get('publishedAt')
+    }
+    axios.post('http://localhost:3001/newmagazine',formData)
+    .then(()=>{
+      setAdded(<h1>Magazine added, can download csv file!</h1>)
+    })
+    .catch((err)=>{
+      setAdded(<h1>Unable to add Magazine!</h1>)
+    })
+  }
+
 
   return (<>
     <h1 style={{textAlign: "center"}}>You can Add Magazine in csv file and download it</h1>
-    <form action="/newbook" method="POST">
-        <label for="title">Title: 
+    <form onSubmit={(e)=>{handleSubmit(e)}}>
+        <label htmlFor="title">Title: 
             <input type="text" name="title"/>
         </label>
-        <label for="authors">Authors: 
+        <label htmlFor="authors">Authors: 
             <input type="text" name="authors"/>
         </label>
-        <label for="isbn">ISBN: 
+        <label htmlFor="isbn">ISBN: 
             <input type="text" name="isbn"/>
         </label>
-        <label for="publishedAt">Published-At: 
+        <label htmlFor="publishedAt">Published-At: 
             <input type="text" name="publishedAt"/>
         </label>
-        <input class="btn" type="submit" value="Submit"/>
+        {added}
+        <input className="btn" type="submit" value="Submit"/>
     </form>
-
+    <label>Search: 
     <input type="text" value={isbnSearch} onChange={(e) => {
         setIsbnSearch(e.target.value)
-    }} placeholder="Search by ISBN" />
+    }} placeholder="Search by ISBN or author email" />
+    </label>
+    
     <table style={{
         margin: '5rem 0',
         padding:'1rem 1rem',
@@ -64,8 +86,8 @@ function Magazines() {
         </thead>
 <tbody>
      
-        {magazines.filter((m) => m.isbn.includes(isbnSearch)).map(magazine=><>
-        <tr>
+        {magazines.filter((m) => (m.isbn.includes(isbnSearch)||m.authors.includes(isbnSearch))).map(magazine=>
+            <tr key={Math.floor(Math.random()*1000000)}>
                 <td 
                  style={{fontSize: "0.9rem",textAlign : 'left'}}
                 >{magazine.title} </td>
@@ -80,14 +102,12 @@ function Magazines() {
                 <td 
                  style={{fontSize: "0.9rem",textAlign : magazine.publishedAt?'left':'center'}}
                 
-                >{magazine?.publishedAt || '-'} </td>
-              </tr>
-        </>
-              
+                >{magazine.publishedAt || '-'} </td>
+              </tr>      
               )}
               </tbody>
     </table>
-    <button class="btn" onClick={() => func('magazines')}  >Download {0} </button>
+    <button className="btn" onClick={() => func('magazines')}  >Download magazines.csv </button>
   
   </>
   
