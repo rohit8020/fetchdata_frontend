@@ -1,5 +1,6 @@
-.App {
-  text-align: center;
+#root,body{
+  overflow-x: hidden;
+  width: 100vw;
 }
 
 .App-header {

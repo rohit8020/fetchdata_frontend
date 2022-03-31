@@ -3,8 +3,9 @@ import './index.css'
 
 function Magazines() {
     const [magazines, setMagazines] = useState([])
+    const [isbnSearch,setIsbnSearch] = useState('')
     const fetchMagzines = async () => {
-        const response = await fetch(`${window.location.origin}/books`)
+        const response = await fetch(`${window.location.origin}/magazines`)
         const data = await response.json()
         setMagazines(data?.data)
     }
@@ -47,18 +48,44 @@ function Magazines() {
         </label>
         <input class="btn" type="submit" value="Submit"/>
     </form>
-    <table>
-        <tr><th>Title</th><th>Authors</th><th>ISBN</th><th>Published-At</th></tr>
+
+    <input type="text" value={isbnSearch} onChange={(e) => {
+        setIsbnSearch(e.target.value)
+    }} placeholder="Search by ISBN" />
+    <table style={{
+        margin: '5rem 0',
+        padding:'1rem 1rem',
+        overflowX: 'scroll',
+        width : "100vw",
+    }}>
+        <thead>
+
+        <tr><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Title</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Authors</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>ISBN</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Published-At</th></tr>
+        </thead>
+<tbody>
+     
+        {magazines.filter((m) => m.isbn.includes(isbnSearch)).map(magazine=><>
         <tr>
-        {magazines.forEach(magazine=>{<>
-                <td>{magazine.title} </td>
-                <td>{magazine.authors} </td>
-                <td>{magazine.isbn} </td>
-                <td>{magazine.publishedAt} </td>
-        </>
-              }
-              )}
+                <td 
+                 style={{fontSize: "0.9rem",textAlign : 'left'}}
+                >{magazine.title} </td>
+                <td 
+                 style={{fontSize: "0.9rem",textAlign : 'left'}}
+                
+                >{magazine.authors} </td>
+                <td 
+                 style={{fontSize: "0.9rem",textAlign : 'left'}}
+                
+                >{magazine.isbn} </td>
+                <td 
+                 style={{fontSize: "0.9rem",textAlign : magazine.publishedAt?'left':'center'}}
+                
+                >{magazine?.publishedAt || '-'} </td>
               </tr>
+        </>
+              
+              )}
+              </tbody>
     </table>
     <button class="btn" onClick={() => func('magazines')}  >Download {0} </button>
   

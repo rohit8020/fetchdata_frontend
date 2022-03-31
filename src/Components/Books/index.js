@@ -3,6 +3,7 @@ import './index.css'
 
 function Books() {
     const [books, setBooks] = useState([])
+    const [isbnSearch,setIsbnSearch] = useState('')
     const page = 1;
     function func(file){
         fetch(`${window.location.origin}/download/${file}`,{
@@ -47,19 +48,34 @@ useEffect(()=>{
         </label>
         <input className="btn" type="submit" value="Submit"/>
     </form>
-    <table>
-        <tr><th>Title</th><th>Authors</th><th>ISBN</th><th>Description</th></tr>
+    <input type="text" value={isbnSearch} onChange={(e) => {
+        setIsbnSearch(e.target.value)
+    }} placeholder="Search by ISBN" />
+
+    <table style={{
+        margin: '5rem 0',
+        padding:'1rem 1rem',
+        overflowX: 'scroll',
+        width : "100vw",
+    }}>
+        <thead>
+
+        <tr><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Title</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Authors</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>ISBN</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Description</th></tr>
+        </thead>
+        <tbody>
+
+        { books.filter((m) => m.isbn.includes(isbnSearch)).map(book=> (<>
             <tr>
-        { books.map(book=> (<>
-          <td>{book.title}</td>
-          <td>{book.authors}</td>
-          <td>{book.isbn}</td>
-          <td>{book.description}</td>
+          <td style={{fontSize: "0.9rem",textAlign : book?.title?'left':'center'}}>{book?.title || '-'}</td>
+          <td style={{fontSize: "0.9rem",textAlign : 'left'}}>{book?.authors || '-' }</td>
+          <td style={{fontSize: "0.9rem",textAlign : 'left'}}>{book?.isbn || '-'}</td>
+          <td style={{fontSize: "0.9rem",textAlign : book?.description? 'left': 'center'}}>{book?.description || '-'}</td>
+          </tr>
           </>
           )
-        )
-      }
-            </tr>
+          )
+        }
+        </tbody>
     </table>
     <button className="btn" onClick={() => func('books')} >Download {page}</button>
 

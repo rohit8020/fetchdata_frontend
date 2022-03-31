@@ -4,19 +4,29 @@ function BooksAndMagazines() {
 
 
       const [BooksAndMagazines, setBooksAndMagazines] = useState([])
-    const fetchBooksAndMagzines = async () => {
+      const [booksAdded,setBooksAdded] = useState(false)
+    const fetchBooks = async () => {
         const response = await fetch(`${window.location.origin}/books`)
         const data = await response.json()
-        setBooksAndMagazines([...BooksAndMagazines],[...data?.data])
-        const response2 = await fetch(`${window.location.origin}/magzines`)
-        const data2 = await response2.json()
-        setBooksAndMagazines([...BooksAndMagazines],[...data2?.data])
+        setBooksAndMagazines([...BooksAndMagazines || [],...data?.data])
+        setBooksAdded(true)
+    }
+    const fetchMagzines = async () => {
+        const response = await fetch(`${window.location.origin}/magazines`)
+        const data = await response.json()
+        setBooksAndMagazines([...BooksAndMagazines || [],...data?.data])
     }
     useEffect(()=>{
-      fetchBooksAndMagzines();
-    })    
+      fetchBooks();
+    },[])    
     
-  function func(file){
+useEffect(()=>{
+    if(booksAdded === true){
+        fetchMagzines();
+    }
+},[booksAdded])
+console.log(BooksAndMagazines)
+    function func(file){
     fetch(`${window.location.origin}/download/${file}`,{
     method : 'POST'})
     .then((res)=>res.blob().then((blob)=>{
@@ -37,34 +47,53 @@ function BooksAndMagazines() {
   return (<>
     <h1 style={{textAlign: "center"}}>You can Add Magazine in csv file and download it</h1>
     <form action="/newbook" method="POST">
-        <label for="title">Title: 
+        <label htmlFor="title">Title: 
             <input type="text" name="title"/>
         </label>
-        <label for="authors">Authors: 
+        <label htmlFor="authors">Authors: 
             <input type="text" name="authors"/>
         </label>
-        <label for="isbn">ISBN: 
+        <label htmlFor="isbn">ISBN: 
             <input type="text" name="isbn"/>
         </label>
-        <label for="publishedAt">Published-At: 
+        <label htmlFor="publishedAt">Published-At: 
             <input type="text" name="publishedAt"/>
         </label>
-        <input class="btn" type="submit" value="Submit"/>
+        <input className="btn" type="submit" value="Submit"/>
     </form>
-    <table>
-        <tr><th>Title</th><th>Authors</th><th>ISBN</th><th>Published-At</th></tr>
+    <table style={{
+        margin: '5rem 0',
+        padding:'1rem 1rem',
+        overflowX: 'scroll',
+        width : "100vw",
+    }}>
+        <thead>
+
+                <tr><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Title</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Authors</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>ISBN</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Published At</th></tr>
+        </thead>
+<tbody>
+
+        {BooksAndMagazines.sort(function (a,b) { return a.title.toLocaleLowerCase() > b.title.toLocaleLowerCase()?1:-1})?.length>0 && BooksAndMagazines?.map(magazine=><>
         <tr>
-        {BooksAndMagazines.forEach(magazine=>{<>
-                <td>{magazine.title} </td>
-                <td>{magazine.authors} </td>
-                <td>{magazine.isbn} </td>
-                <td>{magazine.publishedAt} </td>
-        </>
-              }
-              )}
+                <td
+                style={{fontSize: "0.9rem",textAlign : 'left'}}
+>{magazine.title} </td>
+                <td
+                style={{fontSize: "0.9rem",textAlign : 'left'}}
+                >{magazine.authors} </td>
+                <td
+                style={{fontSize: "0.9rem",textAlign : 'left'}}
+                >{magazine.isbn} </td>
+                <td
+                style={{fontSize: "0.9rem",textAlign : magazine.publishedAt?'left':`center`}}
+                >{magazine.publishedAt || '-'} </td>
               </tr>
+        </>
+              
+              )}
+              </tbody>
     </table>
-    <button class="btn" onClick={() => func('magazines')}  >Download {0} </button>
+    <button className="btn" onClick={() => func('magazines')}  >Download {0} </button>
   
   </>
   

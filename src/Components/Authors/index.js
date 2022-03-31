@@ -3,7 +3,7 @@ import './index.css'
 function Authors() {
   
   const [authors, setAuthors] = React.useState([])
-
+  const [emailSearch, setEmailSearch] = React.useState('')
   function func(file){
     fetch(`${window.location.origin}/download/${file}`,{
     method : 'POST'})
@@ -21,12 +21,13 @@ function Authors() {
     })
 }
 const fetchAuthors = async () => {
-  const response = await fetch(`${window.location.origin}/books`)
+  const response = await fetch(`${window.location.origin}/authors`)
   const data = await response.json()
   setAuthors(data?.data)
 }
 useEffect(()=>{
   fetchAuthors();
+  console.log(authors)
 },[])    
 
   return (<>
@@ -43,20 +44,34 @@ useEffect(()=>{
         </label>
         <input class="btn" type="submit" value="Submit"/>
     </form>
-    <table>
-        <tr><th>First Name</th><th>Last Name</th><th>Email</th></tr>
-          <tr>
+    <input type="text" value={emailSearch} onChange={(e) => {
+        setEmailSearch(e.target.value)
+    }} placeholder="Search by ISBN" />
+
+    <table style={{
+        margin: '5rem 0',
+        padding:'1rem 1rem',
+        overflowX: 'scroll',
+        width : "100vw",
+    }}>
+      <thead>
+
+      <tr><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>First Name</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Last Name</th><th style={{fontSize: '1.3 rem',textAlign: 'left',}}>Email</th></tr>
+
+      </thead>
+
+      <tbody>
         {
-        authors.forEach(author=> (<>
-        
-                <td>{author.firstname}</td>
-                <td>{author.lastname}</td>
-                <td>{author.email}</td>
-                </>)
+          authors.filter((m) => m.email.includes(emailSearch)).map(author=> (<>
+          <tr>
+          <td style={{fontSize: "0.9rem",textAlign : 'left'}}>{author.firstname || '-'}</td>
+          <td style={{fontSize: "0.9rem",textAlign : 'left'}}>{author['lastname\r'] || '-'}</td>
+          <td style={{fontSize: "0.9rem",textAlign : 'left'}}>{author.email || '-'}</td>
+        </tr>
+        </>)
         )
       }
-        
-        </tr>
+      </tbody>      
     </table>
     
     <button class="btn" onClick={() => func('authors')}>Download {0}</button>
