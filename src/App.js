@@ -4,6 +4,7 @@ import Authors from "./Components/Authors";
 import Books from "./Components/Books";
 import BooksAndMagazines from "./Components/BooksAndMagazines";
 import Magazines from "./Components/Magazines";
+import "./Components/Books/index.css";
 
 function App() {
   const [xpage, setPage] = useState('books');

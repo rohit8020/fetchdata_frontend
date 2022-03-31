@@ -1,0 +1,30 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+table{
+    border: 2px solid grey;
+    width: 100%;
+}
+tr{
+    border: 2px solid grey;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+}
+input{
+    width: 100%;
+    margin-bottom: 10px;
+}
+.btn{
+    width: 30%;
+    align-self: center;
+    background: rgb(66, 165, 53);
+    color: white;
+    margin-top: 20px;
+    cursor: pointer;
+}
